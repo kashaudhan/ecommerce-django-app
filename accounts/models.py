@@ -55,13 +55,13 @@ class Account(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
-    objects = MyAccountManager
+    objects = MyAccountManager()
 
     def __str__(self):
         return self.email
 
-    def has_permission(self, perm, obj=None):
+    def has_perm(self, perm, obj=None):
         return self.is_admin
 
-    def has_module_permission(self, add_label):
+    def has_module_perms(self, add_label):
         return True
