@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+from typing import cast
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,11 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-load_dotenv()
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'admin_honeypot',
     'category',
     'accounts',
     'store',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -125,6 +127,12 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Session timeout
+SESSION_EXPIRE_SECONDS = 3600
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = 'accounts/login/'
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -150,8 +158,8 @@ MESSAGE_TAGS = {
 
 # SMTP configuration
 
-EMAIL_HOST = os.getenv('EMAIL_HOST') #'smtp.<provider's domain>'  e.g., 'smtp.gmail.com'
-EMAIL_PORT = os.getenv('EMAIL_PORT') # for gmail: 587
-EMAIL_HOST_USER = os.getenv('SENDER_EMAIL_ID')
-EMAIL_HOST_PASSWORD = os.getenv('SENDER_EMAIL_PASSWORD')
-EMAIL_USE_TLS = True
+EMAIL_HOST = config('EMAIL_HOST') #'smtp.<provider's domain>'  e.g., 'smtp.gmail.com'
+EMAIL_PORT = config('EMAIL_PORT', cast=int) # for gmail: 587
+EMAIL_HOST_USER = config('SENDER_EMAIL_ID')
+EMAIL_HOST_PASSWORD = config('SENDER_EMAIL_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)

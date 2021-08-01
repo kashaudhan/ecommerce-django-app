@@ -30,6 +30,10 @@
 					<figcaption class="info-wrap">
 						<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
 						<div class="price mt-1">&#8377;{{ product.price }}</div> <!-- price-wrap.// -->
+						<span>
+							{{ product.average_review }}
+							<i class="fa fa-star star-rating" aria-hidden="true"></i>
+						</span>
 					</figcaption>
 				</div>
 			</div>
